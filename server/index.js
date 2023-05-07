@@ -25,5 +25,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(api);
 
 // 监听8088端口
-app.listen(8088);
-console.log('success listen…………');
+app.listen(8088, () => {
+  console.log('Server is running on port 8088')
+})

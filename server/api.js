@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 "use strict";
 const db = require('./db');
 const express = require('express');
@@ -101,7 +102,7 @@ router.post('/api/admin/updateUser', (req, res) => {
             return
         }
         if (docs.length > 0) {
-            if (req.body.avatar == "null" || req.body.avatar.indexOf("avatar") > -1) {//不需更新图片
+            if (req.body.avatar == "null" || req.body.avatar.indexOf("avatar") > -1) { //不需更新图片
                 docs[0].nickName = req.body.nickName;
                 docs[0].avatar = req.body.avatar;
                 db.User(docs[0]).save(function (err) {
@@ -111,14 +112,15 @@ router.post('/api/admin/updateUser', (req, res) => {
                     }
                     res.send({ 'status': 1, 'msg': '更新成功', 'user_name': docs[0]["name"], 'type': docs[0]["type"], 'nickName': docs[0]["nickName"], 'avatar': docs[0]["avatar"] })
                 })
-            } else {//需要更新图片
+            } else { //需要更新图片
                 const fs = require('fs');
                 let D = Date.now();
                 let saveImg = path.join(__dirname, '../static/upload/avatar/' + D + '.png');//api.js的上级的static下
                 let pathImg = './static/upload/avatar/' + D + '.png';//返前台路径目录
-                let base64 = req.body.avatar.replace(/^data:image\/\w+;base64,/, "");
-                let dataBuffer = new Buffer(base64, 'base64'); //把base64码转成buffer对象，
-                fs.writeFile(saveImg, dataBuffer, function (err) {//用fs写入文件
+							let base64 = req.body.avatar.replace(/^data:image\/\w+;base64,/, "");
+							let dataBuffer = Buffer.from(base64, 'base64');
+                // let dataBuffer = new Buffer(base64, 'base64'); //把base64码转成buffer对象，
+                fs.writeFile(saveImg, dataBuffer, function (err) { //用fs写入文件
                     if (err) {
                         console.log(err);
                     } else {
@@ -166,12 +168,13 @@ router.post('/api/admin/checkUser', (req, res) => {
 
 //获取所有文章列表
 router.post('/api/articleList', (req, res) => {
+
     db.Article.find({}, (err, data) => {
         if (err) {
             res.send(err);
             return
         }
-        if (req.body.type == 'archives') {//archives结构
+        if (req.body.type == 'archives') { //archives结构
             let arr = [];
             let data_archives = [];
 
@@ -205,7 +208,7 @@ router.post('/api/articleList', (req, res) => {
                 }
             }
             res.send(data_archives)
-        } else if (req.body.type == 'categories') {//categories结构
+        } else if (req.body.type == 'categories') { //categories结构
             let arr = [];
             let data_categories = [];
 
@@ -241,7 +244,7 @@ router.post('/api/articleList', (req, res) => {
                 }
             }
             res.send(data_categories)
-        } else {//article结构
+				} else { //article结构
             for (let i = 0; i < data.length; i++) {
                 data[i]["comments"] = data[i]["comments"].length;
                 data[i]["content"] = null;

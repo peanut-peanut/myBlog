@@ -9,15 +9,15 @@
         <!-- <router-link v-if="type=='archives'" @click='goCategory' to="/categories"  class="category"><i class="iconfont icon-tubiao13"></i><span class="link">{{ li.category }}</span></router-link> -->
         <a v-if="type=='archives'" href="javascript:;" @click='goCategory()' class="category">
           <i class="iconfont icon-tubiao13"></i>
-          <template v-for="tag in li.category">
-            <span class="link" :key="tag.id">{{ tag }}</span>
-          </template>
+          <div v-for="tag in li.category" :key="tag.id">
+            <span class="link" >{{ tag }}</span>
+          </div>
         </a>
         <a v-else-if="type=='categories'" href="javascript:;" class="category">
           <i class="iconfont icon-tubiao13"></i>
-          <template v-for="tag in li.category">
-            <span class="link" :key="tag.id" @click="anchor(tag)">{{ tag }}</span>
-          </template>
+          <div v-for="tag in li.category" :key="tag.id">
+            <span class="link"  @click="anchor(tag)">{{ tag }}</span>
+          </div>
         </a>
       </li>
     </ul>

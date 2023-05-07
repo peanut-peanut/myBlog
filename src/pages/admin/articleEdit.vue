@@ -40,10 +40,7 @@ import {checkAdmin,webUrl} from '../../../static/js/public.js'
         category:[],
         gist: '',
         content: '',
-        categorys:['JavaScript','ES6','jQuery','css','ajax',
-        'http','https','websocket','apache','Vue','react','react-native',
-        'android','node','mongo','CentOS','webpack',
-        'NW.js','Electron','easyUI','ECharts','wx','HBuilder']
+        categorys:['技术文档','日周月记','随便写写']
       }
     },
     beforeCreate:function(){

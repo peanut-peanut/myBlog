@@ -12,16 +12,18 @@ import '../static/css/public.css'
 import '../static/css/font/iconfont.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import 'element-ui/lib/theme-chalk/display.css';
+import 'element-ui/lib/theme-chalk/display.css'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+import IconSvg from '../src/components/icon-components.vue'
+
 
 
 // Vue.use(VueResource)
 Vue.prototype.$axios = axios
 Vue.use(ElementUI)
 Vue.use(mavonEditor)
-
+Vue.component('icon-svg', IconSvg)
 new Vue({
   el: '#app',
   data () {
@@ -30,12 +32,10 @@ new Vue({
   },
   router,
 //   axios,
-  store,
+  store
   // watch:{
   //   '$route'(to,from){
   //      console.log(to)
   //    }
   // }
 })
-
-
