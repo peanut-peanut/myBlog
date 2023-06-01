@@ -1,129 +1,142 @@
 <template>
   <div id="content">
-    <a @click="toHome" href="javascript:;" class="toHome">返回首页</a>
-    <h1 class="title">{{type=='article'?'文章列表':'demo列表'}}</h1>
+    <div class="page-header">
+      <el-page-header @back="toHome" title="返回首页"> </el-page-header>
+    </div>
+
+    <!-- <a @click="toHome" href="javascript:;" class="toHome">返回首页</a> -->
+    <h1 class="title">{{ type == "article" ? "文章列表" : "demo列表" }}</h1>
     <div class="tab-box">
       <el-button-group>
-        <el-button :type="type=='article'?'primary':'info'" @click="toggle"><i class="iconfont icon-archives"></i> Article</el-button>
-        <el-button :type="type=='demo'?'primary':'info'" @click="toggle"><i class="iconfont icon-play"></i> Demo</el-button>
+        <el-button
+          :type="type == 'article' ? 'primary' : 'info'"
+          @click="toggle"
+          ><i class="iconfont icon-archives"></i> Article</el-button
+        >
+        <el-button :type="type == 'demo' ? 'primary' : 'info'" @click="toggle"
+          ><i class="iconfont icon-play"></i> Demo</el-button
+        >
       </el-button-group>
     </div>
-    <div v-if="type=='article'">
-      <el-button  @click="handleAdd()" class="btn-add">新增+</el-button>
+    <div v-if="type == 'article'">
+      <el-button @click="handleAdd()" class="btn-add">新增+</el-button>
       <el-table
         :data="articleList"
         style="width: 100%"
-        header-align='right'
+        header-align="right"
         border
-        stripe>
-        <el-table-column
-            label="标题"
-            width="250">
-            <template slot-scope="scope">
-              <span>{{ scope.row.title }}</span>
-            </template>
+        stripe
+      >
+        <el-table-column label="标题" width="250">
+          <template slot-scope="scope">
+            <span>{{ scope.row.title }}</span>
+          </template>
         </el-table-column>
-        <el-table-column
-            label="日期"
-            width="250">
-            <template slot-scope="scope">
-              <i class="el-icon-time"></i>
-              <span>{{ scope.row.date }}</span>
-            </template>
+        <el-table-column label="日期" width="250">
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span>{{ scope.row.date }}</span>
+          </template>
         </el-table-column>
-        <el-table-column
-            label="摘要"
-            width="250">
-            <template slot-scope="scope">
-              <span>{{ scope.row.gist.slice(0,30) }}</span>
-            </template>
+        <el-table-column label="摘要" width="250">
+          <template slot-scope="scope">
+            <span>{{ scope.row.gist.slice(0, 30) }}</span>
+          </template>
         </el-table-column>
-        <el-table-column
-            label="分类"
-            width="250">
-            <template slot-scope="scope">
-              <span v-if="scope.row.category.length === 0">未分类</span>
-              <el-tag v-else class="tag_margin" type="primary" v-for="tag in scope.row.category" :key="tag.id">{{ tag }}</el-tag>
-            </template>
+        <el-table-column label="分类" width="250">
+          <template slot-scope="scope">
+            <span v-if="scope.row.category.length === 0">未分类</span>
+            <el-tag
+              v-else
+              class="tag_margin"
+              type="primary"
+              v-for="tag in scope.row.category"
+              :key="tag.id"
+              >{{ tag }}</el-tag
+            >
+          </template>
         </el-table-column>
         <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="primary"
-                @click="handleLook(scope.$index, scope.row)">查看</el-button>
-              <el-button
-                size="mini"
-                type="success"
-                @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-            </template>
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="primary"
+              @click="handleLook(scope.$index, scope.row)"
+              >查看</el-button
+            >
+            <el-button
+              size="mini"
+              type="success"
+              @click="handleEdit(scope.$index, scope.row)"
+              >编辑</el-button
+            >
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+              >删除</el-button
+            >
+          </template>
         </el-table-column>
       </el-table>
     </div>
 
-    <div v-if="type=='demo'">
-        <el-button  @click="handleAdd2()" class="btn-add">新增+</el-button>
-        <el-table
-          :data="demoList"
-          style="width: 100%"
-          header-align='right'
-          border
-          stripe>
-        <el-table-column
-            label="标题"
-            width="200">
-            <template slot-scope="scope">
-              <span>{{ scope.row.title }}</span>
-            </template>
+    <div v-if="type == 'demo'">
+      <el-button @click="handleAdd2()" class="btn-add">新增+</el-button>
+      <el-table
+        :data="demoList"
+        style="width: 100%"
+        header-align="right"
+        border
+        stripe
+      >
+        <el-table-column label="标题" width="200">
+          <template slot-scope="scope">
+            <span>{{ scope.row.title }}</span>
+          </template>
         </el-table-column>
-        <el-table-column
-            label="日期"
-            width="200">
-            <template slot-scope="scope">
-              <i class="el-icon-time"></i>
-              <span>{{ scope.row.date }}</span>
-            </template>
+        <el-table-column label="日期" width="200">
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span>{{ scope.row.date }}</span>
+          </template>
         </el-table-column>
-        <el-table-column
-            label="file"
-            width="200">
-            <template slot-scope="scope">
-                <span>{{ scope.row.file }}</span>
-            </template>
+        <el-table-column label="file" width="200">
+          <template slot-scope="scope">
+            <span>{{ scope.row.file }}</span>
+          </template>
         </el-table-column>
-        <el-table-column
-            label="图片"
-            width="200">
-            <template slot-scope="scope">
-                <span>{{ scope.row.pic }}</span>
-            </template>
+        <el-table-column label="图片" width="200">
+          <template slot-scope="scope">
+            <span>{{ scope.row.pic }}</span>
+          </template>
         </el-table-column>
-        <el-table-column
-            label="摘要"
-            width="200">
-            <template slot-scope="scope">
-              <span>{{ scope.row.gist.slice(0,30) }}</span>
-            </template>
+        <el-table-column label="摘要" width="200">
+          <template slot-scope="scope">
+            <span>{{ scope.row.gist.slice(0, 30) }}</span>
+          </template>
         </el-table-column>
         <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="primary"
-                @click="handleLook2(scope.$index, scope.row)">查看</el-button>
-              <el-button
-                size="mini"
-                type="success"
-                @click="handleEdit2(scope.$index, scope.row)">编辑</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete2(scope.$index, scope.row)">删除</el-button>
-            </template>
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="primary"
+              @click="handleLook2(scope.$index, scope.row)"
+              >查看</el-button
+            >
+            <el-button
+              size="mini"
+              type="success"
+              @click="handleEdit2(scope.$index, scope.row)"
+              >编辑</el-button
+            >
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete2(scope.$index, scope.row)"
+              >删除</el-button
+            >
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -140,26 +153,26 @@ export default {
     return {
       articleList: [],
       demoList: [],
-      type: "article"
+      type: "article",
     };
   },
-  beforeCreate: function() {},
-  mounted: function() {
+  beforeCreate: function () {},
+  mounted: function () {
     // 获取文章列表
-    this.$axios.post(webUrl + "articleList").then(res => {
+    this.$axios.post(webUrl + "articleList").then((res) => {
       if (res) {
         this.articleList = res.data.reverse();
       }
     });
     // 获取demo列表
-    this.$axios.post(webUrl + "demoList").then(res => {
+    this.$axios.post(webUrl + "demoList").then((res) => {
       if (res) {
         this.demoList = res.data.reverse();
       }
     });
   },
   methods: {
-    toHome: function() {
+    toHome: function () {
       this.$router.replace({ name: "home" });
     },
     toggle() {
@@ -200,16 +213,16 @@ export default {
       this.$confirm("此操作将永久删除该文章, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           self.$axios
             .post(webUrl + "admin/deleteArticle", { _id: _id })
-            .then(res => {
+            .then((res) => {
               if (res.data.status == 1) {
                 self.$message({
                   type: "success",
-                  message: "删除成功!"
+                  message: "删除成功!",
                 });
                 self.fetchData();
               }
@@ -218,7 +231,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
     },
@@ -229,16 +242,16 @@ export default {
       this.$confirm("此操作将永久删除该文章, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           self.$axios
             .post(webUrl + "admin/deleteDemo", { _id: _id })
-            .then(res => {
+            .then((res) => {
               if (res.data.status == 1) {
                 self.$message({
                   type: "success",
-                  message: "删除成功!"
+                  message: "删除成功!",
                 });
                 self.fetchData2();
               }
@@ -247,27 +260,27 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
     },
-    fetchData: function() {
+    fetchData: function () {
       // 更新数据
-      this.$axios.post(webUrl + "articleList").then(res => {
+      this.$axios.post(webUrl + "articleList").then((res) => {
         if (res) {
           this.articleList = res.data.reverse();
         }
       });
     },
-    fetchData2: function() {
+    fetchData2: function () {
       // 更新数据---demo
-      this.$axios.post(webUrl + "demoList").then(res => {
+      this.$axios.post(webUrl + "demoList").then((res) => {
         if (res) {
           this.demoList = res.data.reverse();
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -281,6 +294,9 @@ export default {
 #content {
   width: 1300px;
   margin: 0 auto;
+  .page-header {
+    margin-top: 20px;
+  }
   > .title {
     margin: 30px 0;
     text-align: center;

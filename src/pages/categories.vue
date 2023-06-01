@@ -4,13 +4,13 @@
         <el-row>
             <el-col :xs="24" :sm="4" :md="18" :lg="18" :xl="18">
               <div class="main">
-                <p class="title">Categories</p>
+                <p class="title">分类列表</p>
                 <list_article :items="items" type="categories"></list_article>
               </div>
             </el-col>
             <el-col :xs="0" :sm="4" :md="6" :lg="6" :xl="6">
               <div class="aside">
-                <p class="title">Content</p>
+                <p class="title">类别</p>
                 <list_content :items="items"></list_content>
               </div>
             </el-col>

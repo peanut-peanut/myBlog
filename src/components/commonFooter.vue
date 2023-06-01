@@ -1,12 +1,12 @@
 <template>
   <footer>
     <div class="wrapper">
-      <p>本站记录我前端之旅的沿途风景！  Contact me at: 
+      <!-- <p>本站记录我前端之旅的沿途风景！  Contact me at: 
         <a href="https://github.com/bestRenekton" target="_blank"><i class="iconfont icon-github"></i></a>
         <a href="https://www.zhihu.com/people/yang-pang-zi-40/activities" target="_blank"><i class="iconfont icon-zhihu"></i></a>
-      </p>
+      </p> -->
       <p>欢迎光临本站,当前总访问量{{visit}}次</p>
-      <p>taoLand built with vue and node.Theme designed by YYT.</p>
+      <p>京ICP备2023009887号-1</p>
     </div>
     <transition name="slide-fade">
       <div v-if="isTop" class="toTop iconfont icon-top" @click="toTop"></div>

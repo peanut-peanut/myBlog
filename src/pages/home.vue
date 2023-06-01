@@ -11,35 +11,37 @@
           <div class="aside">
             <div class="card">
               <p class="title">ABOUT ME</p>
-              <img class="pic" src="../../static/img/p1.png" alt="" />
+              <img class="pic" src="../../static/img/qingzhou.jpeg" alt="" />
               <div class="row">
-                <p>行路有良友，便是捷径。带上我吧，一起去看更大的世界</p>
+                <p>轻舟已过万重山</p>
                 <div class="icons">
                   <a href="https://github.com/peanut-peanut" target="_blank"
                     ><i class="iconfont icon-github"></i
                   ></a>
-                  <a
-                    href="https://weibo.com/u/5746403289?refer_flag=1005055010_&is_all=1"
-                    target="_blank"
-                    ><i class="iconfont icon-weibo"></i
-                  ></a>
                   <el-tooltip effect="light" placement="bottom">
                     <template #content>
                       <img
-                        style="width: 12rem"
-                        src="https://liuzepeng.com/mywx.jpeg"
+                        style="width: 15rem"
+                        src="../../static/img/qq.png"
+                        alt="我的QQ"
+                      />
+                    </template>
+										<i class="iconfont icon-QQ"></i>
+                  </el-tooltip>
+                  <el-tooltip effect="light" placement="bottom">
+                    <template #content>
+                      <img
+                        style="width: 15rem"
+                        src="../../static/img/wx.png"
                         alt="我的微信"
                       />
                     </template>
-                    <!-- <icon-svg icon-class="weixin" /> -->
-										<i class="iconfont icon-weixin"></i>
+										<i class="iconfont icon-weixin1"></i>
                   </el-tooltip>
                 </div>
               </div>
             </div>
-            <div class="card">
-              <p class="title">FRIENDS</p>
-            </div>
+
           </div>
         </el-col>
       </el-row>
@@ -91,9 +93,9 @@ export default {
       width: 100%;
     }
     .row {
-      padding: 0 10px;
+      padding: 5px 10px;
       & > p {
-        color: #bfbfbf;
+        color: #5d5a5a;
       }
 
       .icons {
@@ -102,7 +104,7 @@ export default {
           transition: all 0.3s;
           margin: 5px;
           color: #000;
-          font-size: 20px;
+          font-size: 25px;
           background-color: rgba(200, 200, 200, 0.3);
           padding: 8px;
           border-radius: 50%;

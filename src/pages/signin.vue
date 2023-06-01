@@ -1,22 +1,51 @@
 <template>
-  <div id="sign_wrap">
-    <div v-if="status==1" class="main signIn">
-      <input v-model="name" placeholder="请输入登录账号">
-      <input v-model="password" placeholder="请输入密码" type="password">
-      <el-button @click="signIn" class="sign" >Sign In</el-button>
-      <p class="toSignUp">New to Taoland ? <span @click="toSignUp" > Sign Up !</span></p>
+  <div class="page">
+    <div class="cont" v-loading="loading" element-loading-text="登录中">
+      <div class="form sign-in">
+        <h2>欢迎回来</h2>
+        <label>
+          <span>账号</span>
+          <input  v-model="name" prefix-icon="el-icon-s-custom" />
+        </label>
+        <label>
+          <span>密码</span>
+          <input v-model="password" type="password" prefix-icon="el-icon-key" />
+        </label>
+        <button type="button" @click="signIn" class="submit">登录</button>
+      </div>
+      <div class="sub-cont">
+        <div class="img">
+          <div class="img__text m--up">
+            <h2>新来的？</h2>
+            <p>请点击注册并发现跟多朋友吧</p>
+          </div>
+          <div class="img__text m--in">
+            <h2>登录?</h2>
+            <p>如果您已经有帐户，请点击登录！</p>
+          </div>
+          <div class="img__btn" @click="handleSwitch">
+            <span class="m--up">注册</span>
+            <span class="m--in">登录</span>
+          </div>
+        </div>
+        <div class="form sign-up">
+          <h2>欢迎注册</h2>
+          <label>
+            <span>账号</span>
+            <input v-model="name" />
+          </label>
+          <label>
+            <span>昵称</span>
+            <input v-model="nickName" />
+          </label>
+          <label>
+            <span>密码</span>
+            <input v-model="password" type="password" />
+          </label>
+          <button type="button" @click="signUp" class="submit">注册</button>
+        </div>
+      </div>
     </div>
-    <div v-else-if="status==2" class="main signUp">
-      <input v-model="name" placeholder="请输入登录账号">
-      <input v-model="nickName" placeholder="请输入昵称">
-      <input v-model="password" placeholder="请输入密码" type="password">
-      <el-button @click="signUp" class="sign" >Sign Up</el-button>
-      <p class="toSignUp"><span @click="back" > Back to Sign In !</span></p>
-    </div>
-    <div v-else-if="status==3" class="loading">
-      <div v-if="!txtSignIn" class="outside"></div>
-      <p v-else class="txt">Sign In</p>
-		</div>
   </div>
 </template>
 
@@ -27,43 +56,39 @@ export default {
   created() {},
   data() {
     return {
-      status: 1, //1登录,2注册，3loading
       name: "",
       password: "",
       nickName: "",
-      txtSignIn: false
+      loading: false,
     };
   },
   mounted() {},
   methods: {
-    toSignUp: function() {
-      this.status = 2;
-      this.reset();
-    },
-    back: function() {
-      this.status = 1;
-      this.reset();
-    },
-    reset: function() {
+    // 重置表单
+    reset: function () {
       this.name = "";
       this.password = "";
       this.nickName = "";
     },
-    signUp: function() {
-      //注册
+    // 切换登录注册页面
+    handleSwitch: function () {
+      this.reset();
+      document.querySelector(".cont").classList.toggle("s--signup");
+    },
+    //注册
+    signUp: function () {
       let that = this;
-
       if (that.name.length > 20) {
         that.$message({
           type: "warning",
-          message: "登录账号太长!"
+          message: "登录账号太长!",
         });
         return;
       }
       if (that.nickName.length > 12) {
         that.$message({
           type: "warning",
-          message: "昵称太长!"
+          message: "昵称太长!",
         });
         return;
       }
@@ -74,7 +99,7 @@ export default {
       ) {
         that.$message({
           type: "warning",
-          message: "有未填写项!"
+          message: "有未填写项!",
         });
         return;
       }
@@ -82,34 +107,36 @@ export default {
         .post(webUrl + "admin/signUp", {
           name: that.name,
           password: that.password,
-          nickName: that.nickName
+          nickName: that.nickName,
         })
-        .then(response => {
-          that.$message({
-            type: "success",
-            message: response.data.msg
-          });
-          if (response.data.status == 1) {
-            that.back();
+        .then((response) => {
+          if (response.data.status === 1) {
+            that.$message({
+              type: "success",
+              message: response.data.msg,
+            });
+            that.handleSwitch();
+          } else {
+            that.$message.error(response.data.msg);
           }
         })
-        .catch(reject => {
+        .catch((reject) => {
           console.log(reject);
         });
     },
-    signIn: function() {
-      //登录
+    //登录
+    signIn: function () {
       let that = this;
       this.$axios
         .post(webUrl + "admin/signIn", {
           name: this.name,
-          password: this.password
+          password: this.password,
         })
-        .then(response => {
+        .then((response) => {
           if (response.data.status == 1) {
+            this.loading = true;
             let type = response.data.type;
 
-            this.status = 3;
             localStorage.setItem("token", response.data.token);
             localStorage.setItem("user_name", response.data.user_name);
             localStorage.setItem("nickName", response.data.nickName);
@@ -121,148 +148,285 @@ export default {
               this.$store.commit("changeIndex", "7");
             }
             setTimeout(() => {
-              this.txtSignIn = true;
+              this.loading = true;
               setTimeout(() => {
                 if (type == 1) {
                   this.$router.push({ name: "ArticleList" }); //admin
                 } else if (type == 2) {
-                  this.$router.push({ name: "visiter" }); //游客
+                  // this.$router.push({ name: "visiter" }); //游客
+                  this.$router.push('/'); //游客定向到主页
                 }
-              }, 1500);
-            }, 3000);
+              }, 500);
+            }, 1000);
           } else {
             that.$message({
               type: "error",
-              message: response.data.msg
+              message: response.data.msg,
             });
           }
         })
-        .catch(reject => {
+        .catch((reject) => {
           console.log(reject);
         });
-    }
+    },
   },
-  beforeCreate: function() {
-    document.getElementsByTagName("body")[0].className = "admin";
-  },
-  beforeDestroy: function() {
-    document.body.removeAttribute("class", "admin");
-  }
+  // beforeCreate: function () {
+  //   document.getElementsByTagName("body")[0].className = "admin";
+  // },
+  // beforeDestroy: function () {
+  //   document.body.removeAttribute("class", "admin");
+  // },
 };
 </script>
 
 <style scoped lang='scss'>
-#sign_wrap {
-  width: 300px;
-  margin: 200px auto 0;
-  input {
-    background: hsla(0, 0%, 100%, 0.08);
-    border-radius: 4px;
-    border: 1px solid #dcdfe6;
-    box-sizing: border-box;
-    color: hsla(0, 0%, 100%, 0.58);
-    display: inline-block;
-    font-size: inherit;
-    height: 40px;
-    line-height: 1;
-    outline: 0;
-    padding: 0 15px;
-    transition: all 0.25s ease;
-    width: 100%;
-    margin-bottom: 20px;
-    &:focus {
-      border-color: #409eff;
-      background: hsla(0, 0%, 100%, 0.28);
-    }
-    &::-webkit-input-placeholder {
-      color: hsla(0, 0%, 100%, 0.58);
-    }
-    &::-moz-placeholder {
-      color: hsla(0, 0%, 100%, 0.58);
-    }
-    &:-moz-placeholder {
-      color: hsla(0, 0%, 100%, 0.58);
-    }
-    &:-ms-input-placeholder {
-      color: hsla(0, 0%, 100%, 0.58);
-    }
-  }
-  .sign {
-    transition: all 0.25s ease;
-    background: hsla(0, 0%, 100%, 0.08);
-    border: 1px solid hsla(0, 0%, 100%, 0.65);
-    border-radius: 3px;
-    box-shadow: 0 0 8px hsla(0, 0%, 100%, 0.3);
-    color: #fff;
-    display: inline-block;
-    font-size: 2rem;
-    padding: 0.78rem 1.3rem;
-    text-decoration: none;
-    text-shadow: none;
-    width: 300px;
-    &:hover {
-      background: hsla(0, 0%, 100%, 0.28);
-    }
-  }
-  .toSignUp {
-    color: #ddd;
-    text-align: center;
-    margin: 20px 0;
-    font-size: 18px;
-    > span {
-      color: #ecf5ff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      &:hover {
-        color: #5da9ff;
-      }
-    }
-  }
-  .loading {
-    width: 100px;
-    height: 100px;
-    position: relative;
-    margin: 50px auto;
-    .outside {
-      border: 4px solid rgba(255, 255, 255, 0.7);
-      border-radius: 50%;
-      animation: loadOut 1s infinite;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-    }
-    .txt {
-      color: rgba(255, 255, 255, 0);
-      animation: txtLarge 1.5s;
-      text-align: center;
-      line-height: 100px;
-    }
-  }
-  @keyframes loadOut {
-    from {
-      width: 0;
-      height: 0;
-      margin-left: 0;
-      margin-top: 0;
-    }
-    to {
-      width: 92px;
-      height: 92px;
-      margin-left: -50px;
-      margin-top: -50px;
-      opacity: 0;
-    }
-  }
-  @keyframes txtLarge {
-    from {
-      transform: scale(1);
-      color: rgba(255, 255, 255, 0);
-    }
-    to {
-      transform: scale(3);
-      color: rgba(255, 255, 255, 0.6);
-    }
-  }
+// @import url("https://fonts.googleapis.com/css?family=Open+Sans");
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.page {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url("../../static/img/bg_admin.jpg");
+  background-size: cover;
+}
+
+input,
+button {
+  border: none;
+  outline: none;
+  background: none;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+.tip {
+  font-size: 20px;
+  margin: 40px auto 50px;
+  text-align: center;
+}
+
+.cont {
+  overflow: hidden;
+  position: relative;
+  width: 900px;
+  height: 600px;
+  // margin-top:  10px;
+  background: #f1eeee;
+  opacity: 0.85;
+}
+
+.form {
+  position: relative;
+  width: 640px;
+  height: 100%;
+  transition: transform 0.8s ease-in-out;
+  padding: 50px 30px 0;
+}
+
+.sub-cont {
+  overflow: hidden;
+  position: absolute;
+  left: 640px;
+  top: 0;
+  width: 900px;
+  height: 100%;
+  padding-left: 260px;
+  background: #fff;
+  transition: transform 0.8s ease-in-out;
+}
+.cont.s--signup .sub-cont {
+  transform: translate3d(-640px, 0, 0);
+}
+
+button {
+  display: block;
+  margin: 0 auto;
+  width: 260px;
+  height: 36px;
+  border-radius: 30px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.img {
+  overflow: hidden;
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 260px;
+  height: 100%;
+  padding-top: 360px;
+}
+.img:before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 900px;
+  height: 100%;
+  // background-image: url("https://images.unsplash.com/photo-1604941138781-78fbefc0d888?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1817&q=80");
+  // background-size: cover;
+  transition: transform 0.8s ease-in-out;
+}
+.img:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+.cont.s--signup .img:before {
+  transform: translate3d(640px, 0, 0);
+}
+.img__text {
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  top: 50px;
+  width: 100%;
+  padding: 0 20px;
+  text-align: center;
+  color: #fff;
+  transition: transform 0.8s ease-in-out;
+}
+.img__text h2 {
+  margin-bottom: 10px;
+  font-weight: normal;
+}
+.img__text p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.cont.s--signup .img__text.m--up {
+  transform: translateX(520px);
+}
+.img__text.m--in {
+  transform: translateX(-520px);
+}
+.cont.s--signup .img__text.m--in {
+  transform: translateX(0);
+}
+.img__btn {
+  overflow: hidden;
+  z-index: 2;
+  position: relative;
+  width: 100px;
+  height: 36px;
+  margin: 0 auto;
+  background: transparent;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 15px;
+  cursor: pointer;
+}
+.img__btn:after {
+  content: "";
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #fff;
+  border-radius: 30px;
+}
+.img__btn span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  transition: transform 1.2s;
+}
+.img__btn span.m--in {
+  transform: translateY(-72px);
+}
+.cont.s--signup .img__btn span.m--in {
+  transform: translateY(0);
+}
+.cont.s--signup .img__btn span.m--up {
+  transform: translateY(72px);
+}
+
+h2 {
+  width: 100%;
+  font-size: 26px;
+  text-align: center;
+}
+
+label {
+  display: block;
+  width: 260px;
+  margin: 25px auto 0;
+  text-align: center;
+}
+label span {
+  font-size: 12px;
+  color: #cfcfcf;
+  text-transform: uppercase;
+}
+
+input {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+  padding-bottom: 5px;
+  font-size: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.forgot-pass {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 12px;
+  color: #cfcfcf;
+}
+
+.submit {
+  margin-top: 80px;
+  margin-bottom: 20px;
+  background: #d4af7a;
+  text-transform: uppercase;
+}
+
+.fb-btn {
+  border: 2px solid #d3dae9;
+  color: #8fa1c7;
+}
+.fb-btn span {
+  font-weight: bold;
+  color: #455a81;
+}
+
+.sign-in {
+  transition-timing-function: ease-out;
+}
+.cont.s--signup .sign-in {
+  transition-timing-function: ease-in-out;
+  transition-duration: 1.2s;
+  transform: translate3d(640px, 0, 0);
+}
+
+.sign-up {
+  transform: translate3d(-900px, 0, 0);
+}
+.cont.s--signup .sign-up {
+  transform: translate3d(0, 0, 0);
 }
 </style>
