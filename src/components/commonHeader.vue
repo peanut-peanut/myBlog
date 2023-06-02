@@ -58,7 +58,7 @@
               ><router-link
                 :class="[activeIndex == 7 ? 'meBtnOn' : 'meBtnOff']"
                 to="/visiter"
-                >><i class="iconfont icon-denglu"></i
+                ><i class="iconfont icon-denglu"></i
                 >{{ nickName }}</router-link
               ></el-menu-item
             >
