@@ -2,7 +2,7 @@
 const mongoose = require('mongoose')
 // 连接数据库 如果不自己创建 默认test数据库会自动生成
 
-mongoose.connect('mongodb://localhost/tao', {
+mongoose.connect('mongodb://localhost/peanut', {
   useNewUrlParser: true,
   useUnifiedTopology: true 
 });

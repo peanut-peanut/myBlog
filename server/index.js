@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors');
 const express = require('express');
 const api = require('./api'); 
+const config = require('./config'); // 加载环境配置文件
 const app = express();
 // const cookieParser=require('cookie-parser');
 const session=require('express-session');
@@ -25,6 +26,11 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(api);
 
 // 监听8088端口
-app.listen(8088, () => {
-  console.log('Server is running on port 8088')
+// app.listen(8088, () => {
+//   console.log('Server is running on port 8088')
+// })
+
+//启动服务器
+app.listen(config.port, () => {
+  console.log(`Server is running on port ${config.port}`);
 })
